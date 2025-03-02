@@ -1,8 +1,11 @@
 # Use a multi-platform compatible FFmpeg base image
 FROM linuxserver/ffmpeg:4.4-cli-ls70
 
-# Install Python and pip
-RUN apk add --no-cache python3 py3-pip
+# Install Python and pip using apt
+RUN apt update && \
+    apt install -y python3 python3-pip && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
 WORKDIR /processor
