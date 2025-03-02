@@ -1,5 +1,5 @@
-# Use a prebuilt FFmpeg image as the base
-FROM jrottenberg/ffmpeg:4.4-alpine
+# Use a multi-platform compatible FFmpeg base image
+FROM linuxserver/ffmpeg:version-4.4
 
 # Install Python and pip
 RUN apk add --no-cache python3 py3-pip
