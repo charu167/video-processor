@@ -1,5 +1,5 @@
 # Use a multi-platform compatible FFmpeg base image
-FROM linuxserver/ffmpeg:version-4.4
+FROM linuxserver/ffmpeg:4.4-cli-ls70
 
 # Install Python and pip
 RUN apk add --no-cache python3 py3-pip
