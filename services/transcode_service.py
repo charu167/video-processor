@@ -1,25 +1,5 @@
 import ffmpeg
 
-
-class Transcode:
-    def __init__(self) -> None:
-        pass
-
-    def convert_to_360p(self, input_path, output_path):
-        ffmpeg.input(input_path).output(output_path, vf="scale=640:360").run()
-
-    def convert_to_480p(self, input_path, output_path):
-        ffmpeg.input(input_path).output(output_path, vf="scale=854:480").run()
-
-    def convert_to_720p(self, input_path, output_path):
-        ffmpeg.input(input_path).output(output_path, vf="scale=1280:720").run()
-
-    def convert_to_1080p(self, input_path, output_path):
-        ffmpeg.input(input_path).output(output_path, vf="scale=1920:1080").run()
-
-
-import ffmpeg
-
 class Transcode:
     def __init__(self) -> None:
         pass

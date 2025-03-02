@@ -2,3 +2,4 @@ python-dotenv
 ffmpeg-python
 redis
 boto3
+requests

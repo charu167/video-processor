@@ -4,7 +4,7 @@ import requests
 
 class Notification:
     def __init__(self) -> None:
-        self.url = "http://127.0.0.1:8000/notify"
+        self.url = "http://host.docker.internal:8000/notify"
 
     def send_notification(self, title, message):
         payload = json.dumps({"title": title, "message": message})
