@@ -17,6 +17,7 @@ def download_video(job):
     return download_path
 
 
+
 def process_video(download_path):
     transcoder.convert_resolution(input_path=download_path, output_path="./downloads/temp360.mp4", width=640, height=360)
     transcoder.convert_resolution(input_path=download_path, output_path="./downloads/temp480.mp4", width=854, height=480)
@@ -28,3 +29,6 @@ def process_video(download_path):
 def process_job(job):
     download_path = download_video(job)
     process_video(download_path)
+    
+    s3.upload_file('./downloads/temp360.mp4', 'v-out-bucket', 'temp360.mp4')
+    

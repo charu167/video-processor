@@ -1,11 +1,8 @@
-# Use a multi-platform compatible FFmpeg base image
-FROM linuxserver/ffmpeg:4.4-cli-ls70
+# Use the official Python Alpine image as the base
+FROM python:3.9-alpine
 
-# Install Python and pip using apt
-RUN apt update && \
-    apt install -y python3 python3-pip && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
+# Install FFmpeg and other dependencies using apk
+RUN apk add --no-cache ffmpeg
 
 # Set the working directory
 WORKDIR /processor
@@ -14,7 +11,7 @@ WORKDIR /processor
 COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 COPY . .
