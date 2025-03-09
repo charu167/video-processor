@@ -65,7 +65,7 @@ def process_job(job):
 
         # Send notification request
         response = requests.post(
-            "http://localhost:3001/notification/video-processed",
+            "http://host.docker.internal:3001/notification/video-processed",
             data=json.dumps(payload),
             headers={"Content-Type": "application/json"},
         )
