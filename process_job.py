@@ -9,13 +9,17 @@ transcoder = Transcode()
 
 
 def download_video(job):
-    s3 = S3Service()
+    bucket = job.get("bucket")
+    key = job.get("fileKey")
 
-    bucket = job["Bucket"]
-    key = job["Key"]
+    if not bucket or not key:
+        raise ValueError("Missing Bucket or Key in job data")
+
     local_filename = key.split("/")[-1]
     download_path = f"./downloads/{local_filename}"
     os.makedirs(os.path.dirname(download_path), exist_ok=True)
+
+    # ✅ Download the file
     s3.download_file(bucket, key, download_path)
     return download_path
 
@@ -49,23 +53,45 @@ def process_video(download_path):
 
 def process_job(job):
     try:
+        user_id = job.get("userId")  # Extract userId from job data
+
+        if not user_id:
+            print("Invalid job data: Missing userId or jobId")
+            return
+
         # Download and process video
         download_path = download_video(job)
         process_video(download_path)
 
-        # Upload to S3
-        s3.upload_file("./downloads/temp360.mp4", "v-out-bucket", "temp360.mp4")
+        # ✅ Upload processed videos to structured S3 paths
+        resolutions = {
+            "360p": "./downloads/temp360.mp4",
+            "480p": "./downloads/temp480.mp4",
+            "720p": "./downloads/temp720.mp4",
+            "1080p": "./downloads/temp1080.mp4",
+        }
 
-        # Prepare notification payload
+        output_bucket = "v-out-bucket"
+
+        # Upload to S3
+        for res, file_path in resolutions.items():
+            output_key = f"output/{user_id}/output_{res}.mp4"
+            s3.upload_file(file_path, output_bucket, output_key)
+
+        # ✅ Prepare notification payload with correct video paths
         payload = {
-            "userId": 1,  # Extract from job instead of hardcoding
-            "videoId": 'xyz.mp4',
+            "userId": user_id,
+            # "jobId": job_id,
             "status": "completed",
+            "outputVideos": {
+                res: f"s3://{output_bucket}/{output_key}"
+                for res, output_key in resolutions.items()
+            },
         }
 
         # Send notification request
         response = requests.post(
-            "http://host.docker.internal:3001/notification/video-processed",
+            "http://localhost:3001/notification/video-processed",
             data=json.dumps(payload),
             headers={"Content-Type": "application/json"},
         )
