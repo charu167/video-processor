@@ -12,8 +12,6 @@ class S3Service:
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
-        
-        
 
     def download_file(self, bucket, key, local_path):
         try:
@@ -26,7 +24,11 @@ class S3Service:
         except Exception as e:
             print(f"Download failed: {str(e)}")
             return False
-        
-    def upload_file(self, local_path, bucket, object_name):
+
+    def upload_file(self, local_path, bucket, object_name, expires_in=3600):
         self.s3_client.upload_file(local_path, bucket, object_name)
-        
+        return self.s3_client.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": bucket, "Key": object_name},
+            ExpiresIn=expires_in,
+        )
