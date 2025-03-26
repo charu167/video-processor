@@ -4,6 +4,8 @@ import os
 import requests
 import json
 
+from config.config import LOCAL_URL
+
 s3 = S3Service()
 transcoder = Transcode()
 
@@ -91,7 +93,7 @@ def process_job(job):
 
         # Send notification request
         response = requests.post(
-            "http://localhost:3001/notification/video-processed",
+            f"http://{LOCAL_URL}:3001/notification/video-processed",
             data=json.dumps(payload),
             headers={"Content-Type": "application/json"},
         )
