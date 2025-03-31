@@ -27,6 +27,7 @@ def pubsub_listener():
             # Fetch Job
             job = redis_client.pop_queue(queue_name="video-processing-in-queue")
 
+            # print(job)
             # Send a notification that someone took the job and continue
             if not job:
                 notification.send_notification(

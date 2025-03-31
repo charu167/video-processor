@@ -4,7 +4,7 @@ import shutil
 import requests
 from typing import Dict, Optional
 from pathlib import Path
-from config.config import LOCAL_URL
+from config.config import BASE_URL
 from services.transcode_service import Transcode
 from services.s3_service import S3Service
 
@@ -28,6 +28,7 @@ def download_video(job: Dict) -> str:
     bucket = job.get("bucket")
     key = job.get("fileKey")
 
+    print(job)
     if not bucket or not key:
         raise ValueError("Missing Bucket or Key in job data")
 
@@ -96,7 +97,7 @@ def send_notification(payload: Dict) -> bool:
     """Send processing completion notification"""
     try:
         response = requests.post(
-            f"http://{LOCAL_URL}:3001/notification/video-processed",
+            f"{BASE_URL}/notification/video-processed",
             data=json.dumps(payload),
             headers={"Content-Type": "application/json"},
             timeout=10,
